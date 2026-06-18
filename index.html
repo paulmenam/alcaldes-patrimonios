@@ -7,30 +7,25 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <style>
   * { box-sizing: border-box; }
-  html, body {
-    margin: 0; padding: 0;
-    font-family: Georgia, 'Times New Roman', serif;
-    color: #21254e; background: #ffffff;
-    -webkit-font-smoothing: antialiased;
+  html, body { margin: 0; padding: 0; background: #ffffff; }
+  body { font-family: Georgia, 'Times New Roman', serif; color: #21254e; -webkit-font-smoothing: antialiased; }
+
+  /* Bloque total de altura fija: se ve igual en cualquier dispositivo */
+  .wrap {
+    height: 700px; max-width: 1180px; margin: 0 auto;
+    padding: 14px 18px 12px;
+    display: flex; flex-direction: column; overflow: hidden;
   }
-  .wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding: 28px 20px 40px; }
   h1 {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-weight: 700; color: #21254e;
-    font-size: clamp(26px, 4vw, 40px); line-height: 1.15; margin: 0 0 10px;
+    flex: none; font-family: Georgia, 'Times New Roman', serif; font-weight: 700; color: #21254e;
+    font-size: clamp(22px, 3.5vw, 38px); line-height: 1.12; margin: 0 0 5px;
   }
-  .subtitle {
-    font-family: Georgia, 'Times New Roman', serif; color: #21254e;
-    font-size: clamp(15px, 2vw, 18px); line-height: 1.4; margin: 0 0 14px; opacity: 0.85;
-  }
-  .hint {
-    font-family: Georgia, 'Times New Roman', serif; font-size: 13.5px; color: #5a5c72;
-    margin: 0 0 10px; display: flex; align-items: center; gap: 7px;
-  }
+  .subtitle { flex: none; color: #21254e; font-size: clamp(13px, 1.8vw, 17px); line-height: 1.35; margin: 0 0 5px; opacity: 0.85; }
+  .hint { flex: none; font-size: 13px; color: #5a5c72; margin: 0 0 7px; display: flex; align-items: center; gap: 7px; }
   .hint .dot { width: 11px; height: 11px; border-radius: 50%; background: #e9590e; opacity: 0.9; display: inline-block; flex: none; }
 
-  #chart { position: relative; width: 100%; }
-  #chart svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
+  #chart { flex: 1 1 auto; min-height: 0; position: relative; width: 100%; }
+  #chart svg { display: block; width: 100%; height: 100%; touch-action: pan-y; }
 
   .gridline { stroke: #e2e3ec; stroke-width: 1; }
   .gridline.zero { stroke: #b9bbcd; stroke-width: 1.2; }
@@ -49,24 +44,24 @@
     position: absolute; pointer-events: none; background: #ffffff;
     border: 1px solid #d9dae3; border-left: 4px solid #e9590e;
     box-shadow: 0 6px 22px rgba(33,37,78,0.16);
-    padding: 11px 14px; border-radius: 4px;
+    padding: 10px 13px; border-radius: 4px;
     font-family: Georgia, 'Times New Roman', serif; color: #21254e;
-    max-width: 290px; opacity: 0; transform: translateY(4px);
+    max-width: 285px; opacity: 0; transform: translateY(4px);
     transition: opacity 0.12s ease, transform 0.12s ease; z-index: 10;
   }
   .tooltip.show { opacity: 1; transform: translateY(0); }
-  .tt-name  { font-weight: 700; font-size: 15px; line-height: 1.25; margin-bottom: 4px; }
-  .tt-role  { font-size: 13.5px; line-height: 1.3; margin-bottom: 6px; }
-  .tt-sit   { font-size: 13px; line-height: 1.3; color: #5a5c72; }
-  .tt-money { font-size: 14px; font-weight: 700; line-height: 1.3; color: #21254e; margin: 6px 0 2px; }
-  .tt-year  { font-size: 13px; line-height: 1.3; color: #5a5c72; }
+  .tt-name  { font-weight: 700; font-size: 14.5px; line-height: 1.25; margin-bottom: 3px; }
+  .tt-role  { font-size: 13px; line-height: 1.3; margin-bottom: 5px; }
+  .tt-sit   { font-size: 12.5px; line-height: 1.3; color: #5a5c72; }
+  .tt-money { font-size: 14px; font-weight: 700; line-height: 1.3; color: #21254e; margin: 5px 0 2px; }
+  .tt-year  { font-size: 12.5px; line-height: 1.3; color: #5a5c72; }
 
-  .bottombar { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 14px 24px; margin-top: 16px; }
-  .footer { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; line-height: 1.5; color: #6c6e82; margin: 0; }
+  .bottombar { flex: none; display: flex; align-items: flex-end; flex-wrap: wrap; gap: 10px 22px; margin-top: 8px; }
+  .footer { font-family: Georgia, 'Times New Roman', serif; font-size: 12.5px; line-height: 1.45; color: #6c6e82; margin: 0; }
   .footer .src { color: #21254e; }
-  .credit { display: flex; align-items: center; gap: 9px; margin-left: auto; }
-  .credit-logo { height: 44px; width: auto; display: block; }
-  .credit-text { font-family: Georgia, 'Times New Roman', serif; font-size: 12.5px; color: #21254e; line-height: 1.25; text-align: right; }
+  .credit { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+  .credit-logo { height: 40px; width: auto; display: block; }
+  .credit-text { font-family: Georgia, 'Times New Roman', serif; font-size: 12px; color: #21254e; line-height: 1.2; text-align: right; }
   .credit-text b { font-weight: 700; }
 </style>
 </head>
@@ -97,19 +92,15 @@ const DATA = [{"nombre": "Magali Sánchez Guerrero", "dignidad": "alcalde", "pro
 
 const FILL = "#e9590e";
 const BASE_MAX = 36, BASE_MIN = 5, BASE_PAD = 1.6;
-const SVG_H = 600;
-const MARGIN = { top: 16, right: 22, bottom: 26 };
+const MARGIN_RIGHT = 22, MT = 8, MB = 8;
 
 const values = DATA.map(d => d.patrimonio);
 const minV = d3.min(values), maxV = d3.max(values);
 
 const opacityScale = d3.scaleLinear().domain([minV, maxV]).range([0.5, 1.0]).clamp(true);
-function bubbleScale(plotW) {
-  const k = 0.72 + (plotW - 240) * 0.001357;
-  return Math.max(0.6, Math.min(0.93, k));
-}
+// tamaño de burbuja según el alto disponible del gráfico (área ∝ patrimonio)
+function scaleForHeight(chartH) { return Math.max(0.35, Math.min(0.92, 0.46 + 0.00079 * (chartH - 400))); }
 function fmtTick(v) { return v === 0 ? "$0" : "$" + (v / 1e6) + " M"; }
-// monto: USD 1.234.567,89  (miles con ".", decimales con ",")
 function fmtMoney(v) {
   const neg = v < 0, abs = Math.round(Math.abs(v));
   const intp = String(abs).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -118,7 +109,7 @@ function fmtMoney(v) {
 
 const container = document.getElementById("chart");
 const tooltip = document.getElementById("tooltip");
-let activeId = null, pinned = false, lastWidth = -1;
+let activeId = null, pinned = false, lastWidth = -1, currentChartH = 460;
 
 function dignidadLabel(d) {
   const dig = d.dignidad.charAt(0).toUpperCase() + d.dignidad.slice(1);
@@ -146,7 +137,7 @@ function showTooltip(d, node) {
   if (left + ttW > w) left = d.x - d.r - 12 - ttW;
   if (left < 0) left = 8;
   if (top < 4) top = 4;
-  if (top + ttH > SVG_H - 4) top = SVG_H - 4 - ttH;
+  if (top + ttH > currentChartH - 4) top = currentChartH - 4 - ttH;
   tooltip.style.left = left + "px"; tooltip.style.top = top + "px";
   d3.selectAll(".bubble").classed("active", false);
   d3.select(node).classed("active", true);
@@ -159,37 +150,41 @@ function render() {
   d3.select(container).select("svg").remove();
   hideTooltip();
 
+  const chartH = Math.max(140, container.clientHeight);  // alto que queda para el gráfico
+  currentChartH = chartH;
   const marginLeft = width < 480 ? 44 : 64;
-  const plotW = width - marginLeft - MARGIN.right;
-  const k = bubbleScale(plotW);
-  const MAX_R = BASE_MAX * k, MIN_R = BASE_MIN * k, PAD = Math.max(0.8, BASE_PAD * k), INSET = MAX_R + 4;
-  const S = SVG_H - MARGIN.top - MARGIN.bottom;
+  const plotW = Math.max(60, width - marginLeft - MARGIN_RIGHT);
+  const S = chartH - MT - MB;
 
-  function radius(v) { return Math.max(MIN_R, MAX_R * Math.sqrt(Math.max(v, 0) / maxV)); }
-  const yScale = d3.scaleLinear()
-    .domain([minV, maxV])
-    .range([MARGIN.top + S - INSET, MARGIN.top + INSET]);
-
-  const nodes = DATA.map((d, i) => Object.assign({}, d, {
-    __id: i, r: radius(d.patrimonio), ty: yScale(d.patrimonio),
-    x: width / 2 + (((i * 97) % 200) - 100) * 0.3, y: yScale(d.patrimonio)
-  }));
-
-  const xMinF = d => marginLeft + d.r, xMaxF = d => width - MARGIN.right - d.r;
-  const sim = d3.forceSimulation(nodes)
-    .force("x", d3.forceX(width / 2).strength(0.04))
-    .force("y", d3.forceY(d => d.ty).strength(0.9))
-    .force("collide", d3.forceCollide(d => d.r + PAD).strength(0.92).iterations(2))
-    .stop();
-  for (let i = 0; i < 600; i++) {
-    sim.tick();
-    for (const d of nodes) d.x = Math.max(xMinF(d), Math.min(xMaxF(d), d.x));
+  let k = scaleForHeight(chartH);
+  let nodes, yScale, INSET;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const MAX_R = BASE_MAX * k, MIN_R = BASE_MIN * k, PAD = Math.max(0.8, BASE_PAD * k);
+    INSET = MAX_R + 4;
+    yScale = d3.scaleLinear().domain([minV, maxV]).range([MT + S - INSET, MT + INSET]);
+    const radius = v => Math.max(MIN_R, MAX_R * Math.sqrt(Math.max(v, 0) / maxV));
+    nodes = DATA.map((d, i) => Object.assign({}, d, {
+      __id: i, r: radius(d.patrimonio), ty: yScale(d.patrimonio),
+      x: width / 2 + (((i * 97) % 200) - 100) * 0.3, y: yScale(d.patrimonio)
+    }));
+    const xMinF = d => marginLeft + d.r, xMaxF = d => width - MARGIN_RIGHT - d.r;
+    const sim = d3.forceSimulation(nodes)
+      .force("x", d3.forceX(width / 2).strength(0.04))
+      .force("y", d3.forceY(d => d.ty).strength(0.9))
+      .force("collide", d3.forceCollide(d => d.r + PAD).strength(0.92).iterations(2))
+      .stop();
+    for (let i = 0; i < 650; i++) {
+      sim.tick();
+      for (const d of nodes) d.x = Math.max(xMinF(d), Math.min(xMaxF(d), d.x));
+    }
+    let maxYR = 0;
+    for (const d of nodes) if (d.y + d.r > maxYR) maxYR = d.y + d.r;
+    if (maxYR <= chartH - 1 || k <= 0.35) break;   // red de seguridad: si se sale, achica y reintenta
+    k = Math.max(0.35, k * 0.92);
   }
 
-  container.style.height = SVG_H + "px";
   const svg = d3.select(container).append("svg")
-    .attr("viewBox", "0 0 " + width + " " + SVG_H)
-    .attr("width", width).attr("height", SVG_H)
+    .attr("viewBox", "0 0 " + width + " " + chartH)
     .attr("preserveAspectRatio", "xMidYMid meet")
     .attr("role", "img")
     .attr("aria-label", "Gráfico de burbujas: patrimonios declarados por alcaldes y prefectos");
@@ -198,7 +193,7 @@ function render() {
   const grid = svg.append("g");
   grid.selectAll("line").data(ticks).join("line")
     .attr("class", d => "gridline" + (d === 0 ? " zero" : ""))
-    .attr("x1", marginLeft - 10).attr("x2", width - MARGIN.right)
+    .attr("x1", marginLeft - 10).attr("x2", width - MARGIN_RIGHT)
     .attr("y1", d => yScale(d)).attr("y2", d => yScale(d));
   grid.selectAll("text").data(ticks).join("text")
     .attr("class", "ytick-label")
@@ -236,7 +231,8 @@ container.addEventListener("click", function (e) {
   if (e.target.tagName !== "circle") hideTooltip();
 });
 
-render();
+// primer render tras aplicar el layout (para medir bien el alto disponible)
+requestAnimationFrame(render);
 
 let rt;
 window.addEventListener("resize", function () {
